@@ -1,11 +1,9 @@
 package domain
 
 import (
-	"errors"
 	"fmt"
 	"strings"
 	"sync"
-	"unicode"
 )
 
 type (
@@ -31,7 +29,7 @@ func (u *Users) AddUser(username string) error {
 	name := strings.ToLower(username)
 
 	// Validate the username format.
-	if err := ValidateUsername(name); err != nil {
+	if err := ValidateName(name); err != nil {
 		return fmt.Errorf("Error:The '%s' contain invalid chars", name)
 	}
 
@@ -54,26 +52,4 @@ func (u *Users) GetUserFolders(username string) (*Folders, error) {
 	}
 
 	return folders, nil
-}
-
-// ValidateUsername checks the format of the username and ensures it meets the system's requirements.
-// Usernames must be between 3 and 20 characters, contain only alphanumeric characters,
-// and must not contain spaces. This method is used during user registration and updating the user profile.
-func ValidateUsername(username string) error {
-
-	if len(username) < 3 || len(username) > 20 {
-		return errors.New("username must be between 3 and 20 characters")
-	}
-
-	for _, r := range username {
-		if !unicode.IsLetter(r) && !unicode.IsNumber(r) {
-			return errors.New("username must contain only alphanumeric characters")
-		}
-	}
-
-	// Check for spaces in the username
-	if containsSpace(username) {
-		return errors.New("username must not contain spaces")
-	}
-	return nil
 }

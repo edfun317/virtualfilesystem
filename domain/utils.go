@@ -1,6 +1,9 @@
 package domain
 
-import "unicode"
+import (
+	"errors"
+	"unicode"
+)
 
 // sortBy it's an enumerate used to specify the sorting type.
 type sortBy int
@@ -26,4 +29,26 @@ func containsSpace(s string) bool {
 		}
 	}
 	return false
+}
+
+// ValidateName checks the format of the name and ensures it meets the system's requirements.
+// Names must be between 3 and 20 characters, contain only alphanumeric characters,
+// and must not contain spaces. This method is used for naming users, folders, and files.
+func ValidateName(name string) error {
+
+	if len(name) < 3 || len(name) > 20 {
+		return errors.New("username must be between 3 and 20 characters")
+	}
+
+	for _, r := range name {
+		if !unicode.IsLetter(r) && !unicode.IsNumber(r) {
+			return errors.New("username must contain only alphanumeric characters")
+		}
+	}
+
+	// Check for spaces in the username
+	if containsSpace(name) {
+		return errors.New("username must not contain spaces")
+	}
+	return nil
 }

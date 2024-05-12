@@ -47,7 +47,7 @@ func TestGetUserFolders(t *testing.T) {
 	}
 }
 
-func TestValidateUsername(t *testing.T) {
+func TestValidateName(t *testing.T) {
 	tests := []struct {
 		name     string
 		username string
@@ -62,7 +62,7 @@ func TestValidateUsername(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			err := ValidateUsername(tt.username)
+			err := ValidateName(tt.username)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ValidateUsername() for %s, wantErr %v, error: %v", tt.username, tt.wantErr, err)
 			}
