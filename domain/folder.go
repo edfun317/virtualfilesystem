@@ -20,3 +20,11 @@ type (
 		Description string
 	}
 )
+
+// NewFolders creates a new Folders instance with initialized map.
+func NewFolders() *Folders {
+
+	return &Folders{
+		List: make(map[string]*Folder),
+	}
+}
