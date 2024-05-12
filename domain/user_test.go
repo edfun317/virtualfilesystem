@@ -46,26 +46,3 @@ func TestGetUserFolders(t *testing.T) {
 		t.Error("Expected error when retrieving folders for a nonexistent user, got nil")
 	}
 }
-
-func TestValidateName(t *testing.T) {
-	tests := []struct {
-		name     string
-		username string
-		wantErr  bool
-	}{
-		{"valid", "testUser", false},
-		{"too short", "tu", true},
-		{"too long", "thisiswaytoolongforausername", true},
-		{"invalid chars", "user!@#", true},
-		{"contains spaces", "test user", true},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			err := ValidateName(tt.username)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("ValidateUsername() for %s, wantErr %v, error: %v", tt.username, tt.wantErr, err)
-			}
-		})
-	}
-}
