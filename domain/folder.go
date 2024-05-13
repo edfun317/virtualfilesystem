@@ -64,6 +64,17 @@ func (f *Folders) AddFolder(name, description string) error {
 	return nil
 }
 
+// FindFolder
+func (f *Folders) FindFolder(name string) (*Folder, error) {
+	folder, exists := f.List[name]
+	if !exists {
+
+		return nil, fmt.Errorf("Error: The '%s' doesn't exist", name)
+	}
+
+	return folder, nil
+}
+
 // RemoveFolder removes a folder from the collection by its name.
 func (f *Folders) RemoveFolder(name string) error {
 
@@ -104,6 +115,33 @@ func (f *Folders) Rename(name, newName string) error {
 
 	delete(f.List, name)
 	return nil
+}
+
+// ListFolders the folders list
+// convert the sorting string value to the corresponding sorting type
+func (f *Folders) ListFolders(user, theBy, theOrder string) ([]string, error) {
+
+	var (
+		by    sortBy    = 0
+		order sortOrder = 0
+	)
+
+	if theBy == "sort-created" {
+		by = 1
+	}
+
+	if theOrder == "desc" {
+		order = 1
+	}
+
+	theFolders := f.GetSortedFolders(by, order)
+	if len(theFolders) == 0 {
+
+		return []string{}, nil
+	}
+	result := FoldersFormatted(user, theFolders)
+
+	return result, nil
 }
 
 // GetSortedFolders returns a sorted slice of Folder based on the provided sort type and order.

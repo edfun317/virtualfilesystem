@@ -39,6 +39,23 @@ func TestAddFolder(t *testing.T) {
 
 }
 
+func TestFindFolder(t *testing.T) {
+
+	f := NewFolders()
+	name := "testFolder"
+
+	// Test adding a folder
+	err := f.AddFolder(name, "")
+	if err != nil {
+		t.Errorf("Failed to add folder: %v", err)
+	}
+
+	_, err = f.FindFolder(name)
+	if err != nil {
+
+		t.Errorf("Failed to add folder: %v", err)
+	}
+}
 func TestRemoveFolder(t *testing.T) {
 	f := NewFolders()
 	name := "testFolder"
@@ -130,6 +147,55 @@ func TestRenameFolder(t *testing.T) {
 	err = folders.Rename("nonExisting", "shouldFail")
 	if err == nil {
 		t.Error("Expected error when trying to rename a non-existing folder, but got nil")
+	}
+}
+
+// TestListFolders
+// Step:
+// 1.setup a Folders instance with some files
+// 2.setup the expected slice string
+// 3.test for ascending sort by creation
+// 4.test for descending sort by names
+// 5.test empty list handling
+func TestListFolders(t *testing.T) {
+
+	f := &Folders{
+		List: map[string]*Folder{
+			"folder1": {Name: "folder1", Created: time.Date(2023, 1, 1, 14, 0, 0, 0, time.UTC)}, // 1 day ago
+			"folder2": {Name: "folder2", Created: time.Date(2023, 1, 1, 15, 0, 0, 0, time.UTC)}, // now
+		},
+	}
+
+	expected := []string{"folder1 2023-01-01 14:00:00 user1", "folder2 2023-01-01 15:00:00 user1"}
+	user := "user1"
+
+	// test for ascending sort by creation
+	files, err := f.ListFolders(user, "sort-created", "asc")
+	if err != nil {
+		t.Errorf("ListFolders returned an error: %v", err)
+	}
+
+	if len(files) != 2 || files[0] != expected[0] {
+		t.Errorf("Expected ['file1', 'file2'], got %v", files)
+	}
+
+	//test for descending sort by names
+	files, err = f.ListFolders(user, "", "desc")
+	if err != nil {
+		t.Errorf("ListFolders returned an error: %v", err)
+	}
+	if len(files) != 2 || files[0] != expected[1] {
+		t.Errorf("Expected ['file2', 'file1'], got %v", files)
+	}
+
+	// Test empty list handling
+	f = &Folders{List: map[string]*Folder{}}
+	files, err = f.ListFolders("john", "sort-created", "asc")
+	if err != nil {
+		t.Errorf("ListFolders returned an error with empty list: %v", err)
+	}
+	if len(files) != 0 {
+		t.Errorf("Expected empty list, got %v", files)
 	}
 }
 
