@@ -135,3 +135,52 @@ func TestFilesFormatted(t *testing.T) {
 		}
 	}
 }
+
+// TestListFiles
+// Step:
+// 1.setup a Files instance with some files
+// 2.setup the expected slice string
+// 3.test for ascending sort by creation
+// 4.test for descending sort by names
+// 5.test empty list handling
+func TestListFiles(t *testing.T) {
+	f := &Files{
+		List: map[string]*File{
+			"file1": {Name: "file1", Created: time.Date(2023, 1, 1, 14, 0, 0, 0, time.UTC)}, // 1 day ago
+			"file2": {Name: "file2", Created: time.Date(2023, 1, 1, 15, 0, 0, 0, time.UTC)}, // now
+		},
+	}
+
+	expected := []string{"file1 2023-01-01 14:00:00 folder1 user1", "file2 2023-01-01 15:00:00 folder1 user1"}
+	user := "user1"
+	folder := "folder1"
+
+	// test for ascending sort by creation
+	files, err := f.ListFiles(user, folder, "sort-created", "asc")
+	if err != nil {
+		t.Errorf("ListFiles returned an error: %v", err)
+	}
+
+	if len(files) != 2 || files[0] != expected[0] {
+		t.Errorf("Expected ['file1', 'file2'], got %v", files)
+	}
+
+	//test for descending sort by names
+	files, err = f.ListFiles(user, folder, "", "desc")
+	if err != nil {
+		t.Errorf("ListFiles returned an error: %v", err)
+	}
+	if len(files) != 2 || files[0] != expected[1] {
+		t.Errorf("Expected ['file2', 'file1'], got %v", files)
+	}
+
+	// Test empty list handling
+	f = &Files{List: map[string]*File{}}
+	files, err = f.ListFiles("john", "emptyFolder", "sort-created", "asc")
+	if err != nil {
+		t.Errorf("ListFiles returned an error with empty list: %v", err)
+	}
+	if len(files) != 0 {
+		t.Errorf("Expected empty list, got %v", files)
+	}
+}
