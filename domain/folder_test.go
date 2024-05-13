@@ -16,8 +16,8 @@ func TestNewFolders(t *testing.T) {
 		t.Errorf("New folder list should be init")
 	}
 }
+func TestAddFolder(t *testing.T) {
 
-func TestAddAndRemoveFolder(t *testing.T) {
 	f := NewFolders()
 	name := "testFolder"
 
@@ -31,6 +31,24 @@ func TestAddAndRemoveFolder(t *testing.T) {
 		t.Errorf("Folder '%s' was not added correctly", name)
 	}
 
+	err = f.AddFolder(name, "")
+	if err == nil {
+
+		t.Error("Expected error when adding a duplicate Folder, got nil")
+	}
+
+}
+
+func TestRemoveFolder(t *testing.T) {
+	f := NewFolders()
+	name := "testFolder"
+
+	// Test adding a folder
+	err := f.AddFolder(name, "")
+	if err != nil {
+		t.Errorf("Failed to add folder: %v", err)
+	}
+
 	// Test removing the folder
 	err = f.RemoveFolder(name)
 	if err != nil {
@@ -39,6 +57,12 @@ func TestAddAndRemoveFolder(t *testing.T) {
 
 	if _, exists := f.List[name]; exists {
 		t.Errorf("Folder '%s' was not removed correctly", name)
+	}
+
+	// Try to remove the same folder again
+	err = f.RemoveFolder(name)
+	if err == nil {
+		t.Error("Expected error when trying to remove a non-existent folder, got nil")
 	}
 }
 
