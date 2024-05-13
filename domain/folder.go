@@ -27,7 +27,7 @@ type (
 	TheFiles interface {
 		AddFile(name, desc string) error
 		RemoveFile(name string) error
-		ListFiles() ([]string, error)
+		ListFiles(user, folder, by, order string) ([]string, error)
 	}
 )
 
