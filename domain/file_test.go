@@ -1,0 +1,137 @@
+package domain
+
+import (
+	"testing"
+	"time"
+)
+
+func TestNewFiles(t *testing.T) {
+	files := NewFiles()
+	if files == nil {
+		t.Fatal("NewFiles() should not return nil")
+	}
+	if files.List == nil {
+		t.Errorf("New Files list should be init")
+	}
+}
+
+// TestAddFile
+// step:
+// 1. make sure adding a file doesn't mess up.
+// 2. check if the file show up in the list after adding.
+// 3. kicks up a fuss when try to add the same file twice.
+func TestAddFile(t *testing.T) {
+
+	f := NewFiles()
+	name := "testFile"
+
+	err := f.AddFile(name, "A test file")
+	if err != nil {
+		t.Errorf("Failed to add file: %v", err)
+	}
+
+	if _, exists := f.List[name]; !exists {
+		t.Errorf("File '%s' was not added correctly", name)
+	}
+
+	err = f.AddFile("testFile", "A test file")
+	if err == nil {
+		t.Error("Expected error when adding a duplicate file, got nil")
+	}
+}
+
+// TestRmoveFile
+// Step:
+// 1. add the file to the list
+// 2. make sure remove a file doesn't mess up.
+// 3. check it the file has been removed from the list
+// 4. kick up a fuss when try to remove the same file twice.
+func TestRemoveFile(t *testing.T) {
+
+	f := NewFiles()
+	name := "testFile"
+
+	f.AddFile("testFile", "")
+
+	err := f.RemoveFile(name)
+	if err != nil {
+		t.Errorf("Failed to remove file: %v", err)
+	}
+
+	if _, exists := f.List[name]; exists {
+		t.Errorf("Folder '%s' was not removed correctly", name)
+	}
+
+	// Try to remove the same file again
+	err = f.RemoveFile(name)
+	if err == nil {
+		t.Error("Expected error when trying to remove a non-existent file, got nil")
+	}
+}
+
+func setupFiles() *Files {
+	f := NewFiles()
+	f.List["file1"] = &File{Name: "file1", Created: time.Date(2023, 1, 1, 12, 0, 0, 0, time.UTC), Description: "First file"}
+	f.List["file2"] = &File{Name: "file2", Created: time.Date(2023, 1, 2, 12, 0, 0, 0, time.UTC), Description: "Second file"}
+	f.List["file3"] = &File{Name: "file3", Created: time.Date(2023, 1, 3, 12, 0, 0, 0, time.UTC), Description: "Third file"}
+	return f
+}
+
+// TestGetSortedFilesByName
+// case: sort by name, and sorting by asc or desc
+func TestGetSortedFilesByName(t *testing.T) {
+	f := setupFiles()
+
+	// Test ascending order by name
+	sortedFiles := f.GetSortedFiles(sortByName, ascending)
+	if sortedFiles[0].Name > sortedFiles[1].Name {
+		t.Errorf("Expected files to be sorted by name in ascending order, got %v before %v", sortedFiles[0].Name, sortedFiles[1].Name)
+	}
+
+	// Test descending order by name
+	sortedFiles = f.GetSortedFiles(sortByName, descending)
+	if sortedFiles[0].Name < sortedFiles[1].Name {
+		t.Errorf("Expected files to be sorted by name in descending order, got %v before %v", sortedFiles[0].Name, sortedFiles[1].Name)
+	}
+}
+
+// TestGetSortedFilesByName
+// case: sort by created, and sorting by asc or desc
+func TestGetSortedFilesByCreated(t *testing.T) {
+	f := setupFiles()
+
+	// Test ascending order by created date
+	sortedFiles := f.GetSortedFiles(sortByCreated, ascending)
+	if sortedFiles[0].Created.After(sortedFiles[1].Created) {
+		t.Errorf("Expected files to be sorted by created date in ascending order, got %v before %v", sortedFiles[0].Created, sortedFiles[1].Created)
+	}
+
+	// Test descending order by created date
+	sortedFiles = f.GetSortedFiles(sortByCreated, descending)
+	if sortedFiles[0].Created.Before(sortedFiles[1].Created) {
+		t.Errorf("Expected files to be sorted by created date in descending order, got %v before %v", sortedFiles[0].Created, sortedFiles[1].Created)
+	}
+}
+
+// TestFilesFormatted
+// case: check the result is equal to the expected
+func TestFilesFormatted(t *testing.T) {
+	files := []File{
+		{Name: "file1", Description: "this-is-file1", Created: time.Date(2023, 1, 1, 15, 0, 0, 0, time.UTC)},
+		{Name: "file2", Created: time.Date(2023, 1, 1, 15, 0, 2, 0, time.UTC)},
+	}
+	user := "user1"
+	folder := "folder1"
+	expected := []string{"file1 this-is-file1 2023-01-01 15:00:00 folder1 user1", "file2 2023-01-01 15:00:02 folder1 user1"}
+
+	result := FilesFormatted(user, folder, files)
+	if len(result) != len(expected) {
+		t.Fatalf("Expected %d formatted strings, got %d", len(expected), len(result))
+	}
+
+	for i, str := range result {
+		if str != expected[i] {
+			t.Errorf("Expected '%s', got '%s'", expected[i], str)
+		}
+	}
+}
