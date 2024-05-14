@@ -19,12 +19,12 @@ type (
 	Folder struct {
 		Name        string
 		Created     time.Time
-		TheFiles    TheFiles
+		TheFiles    FilesManager
 		Description string
 	}
 
 	// TheFiles interface defines the methods to manage files within a folder.
-	TheFiles interface {
+	FilesManager interface {
 		AddFile(name, desc string) error
 		RemoveFile(name string) error
 		ListFiles(user, folder, by, order string) ([]string, error)
@@ -40,7 +40,7 @@ func NewFolders() *Folders {
 }
 
 // AddFolder adds a new folder to the collection with the given name.
-func (f *Folders) AddFolder(name, description string) error {
+func (f *Folders) AddFolder(name, description string, filesManager FilesManager) error {
 
 	if err := ValidateName(name); err != nil {
 
@@ -60,6 +60,7 @@ func (f *Folders) AddFolder(name, description string) error {
 		Name:        name,
 		Created:     time.Now(),
 		Description: description,
+		TheFiles:    filesManager,
 	}
 	return nil
 }

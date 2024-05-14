@@ -1,11 +1,32 @@
 package domain
 
 import (
+	"strings"
 	"testing"
 	"time"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 )
+
+type MockFilesManager struct {
+	mock.Mock
+}
+
+func (m *MockFilesManager) AddFile(name, desc string) error {
+	args := m.Called(name, desc)
+	return args.Error(0)
+}
+
+func (m *MockFilesManager) RemoveFile(name string) error {
+	args := m.Called(name)
+	return args.Error(0)
+}
+
+func (m *MockFilesManager) ListFiles(user, folder, by, order string) ([]string, error) {
+	args := m.Called(user, folder, by, order)
+	return args.Get(0).([]string), args.Error(1)
+}
 
 func TestNewFolders(t *testing.T) {
 	folders := NewFolders()
@@ -16,36 +37,43 @@ func TestNewFolders(t *testing.T) {
 		t.Errorf("New folder list should be init")
 	}
 }
+
 func TestAddFolder(t *testing.T) {
-
-	f := NewFolders()
+	filesManager := new(MockFilesManager) // Create a new mock FilesManager
+	folders := NewFolders()
 	name := "testFolder"
-
-	// Test adding a folder
-	err := f.AddFolder(name, "")
+	// Case 1: Valid folder addition
+	err := folders.AddFolder(name, "", filesManager)
 	if err != nil {
 		t.Errorf("Failed to add folder: %v", err)
 	}
 
-	if _, exists := f.List[name]; !exists {
+	// Verify folder is added
+	if _, exists := folders.List[name]; !exists {
 		t.Errorf("Folder '%s' was not added correctly", name)
 	}
 
-	err = f.AddFolder(name, "")
-	if err == nil {
-
-		t.Error("Expected error when adding a duplicate Folder, got nil")
+	// Case 2: Attempt to add a duplicate folder
+	err = folders.AddFolder(name, "", filesManager)
+	if err == nil || !strings.Contains(err.Error(), "already existed") {
+		t.Errorf("Expected error for duplicate folder, but got none or the wrong error: %v", err)
 	}
 
+	// Case 3: Adding a folder with invalid characters
+	err = folders.AddFolder("Invalid/Name", "Invalid name", filesManager)
+	if err == nil || !strings.Contains(err.Error(), "invalid chars") {
+		t.Errorf("Expected validation error for folder name, but got none or the wrong error: %v", err)
+	}
 }
 
 func TestFindFolder(t *testing.T) {
 
+	filesManager := new(MockFilesManager) // Create a new mock FilesManager
 	f := NewFolders()
 	name := "testFolder"
 
 	// Test adding a folder
-	err := f.AddFolder(name, "")
+	err := f.AddFolder(name, "", filesManager)
 	if err != nil {
 		t.Errorf("Failed to add folder: %v", err)
 	}
@@ -57,11 +85,13 @@ func TestFindFolder(t *testing.T) {
 	}
 }
 func TestRemoveFolder(t *testing.T) {
+
+	filesManager := new(MockFilesManager) // Create a new mock FilesManager
 	f := NewFolders()
 	name := "testFolder"
 
 	// Test adding a folder
-	err := f.AddFolder(name, "")
+	err := f.AddFolder(name, "", filesManager)
 	if err != nil {
 		t.Errorf("Failed to add folder: %v", err)
 	}
@@ -117,12 +147,14 @@ func TestGetSortedFoldersByCreated(t *testing.T) {
 }
 
 func TestRenameFolder(t *testing.T) {
+
+	filesManager := new(MockFilesManager) // Create a new mock FilesManager
 	folders := NewFolders()
 	originalName := "originalFolder"
 	newName := "newFolder"
 
 	// Setup initial folder
-	folders.AddFolder(originalName, "")
+	folders.AddFolder(originalName, "", filesManager)
 
 	// Test renaming to a new name
 	err := folders.Rename(originalName, newName)
@@ -137,7 +169,7 @@ func TestRenameFolder(t *testing.T) {
 	}
 
 	// Test renaming to an already existing name
-	folders.AddFolder(originalName, "") // Re-add original folder for further testing
+	folders.AddFolder(originalName, "", filesManager) // Re-add original folder for further testing
 	err = folders.Rename(originalName, newName)
 	if err == nil {
 		t.Error("Expected error when renaming to an existing folder name, but got nil")

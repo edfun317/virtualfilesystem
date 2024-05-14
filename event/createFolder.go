@@ -16,7 +16,7 @@ func CreateFolder(users *domain.Users, name, folder, desc string) error {
 	}
 
 	//add a new folder with the given name and optional description.
-	if err := folders.AddFolder(folder, desc); err != nil {
+	if err := folders.AddFolder(folder, desc, domain.NewFiles()); err != nil {
 
 		return err
 	}
