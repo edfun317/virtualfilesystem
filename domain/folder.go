@@ -127,11 +127,11 @@ func (f *Folders) ListFolders(user, theBy, theOrder string) ([]string, error) {
 		order sortOrder = 0
 	)
 
-	if theBy == "sort-created" {
+	if theBy == ByCreated {
 		by = 1
 	}
 
-	if theOrder == "desc" {
+	if theOrder == DESC {
 		order = 1
 	}
 

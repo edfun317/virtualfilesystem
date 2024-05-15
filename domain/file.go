@@ -7,6 +7,13 @@ import (
 	"time"
 )
 
+const (
+	ByName    = "--sort-name"
+	ByCreated = "--sort-created"
+	ASC       = "asc"
+	DESC      = "desc"
+)
+
 type (
 	Files struct {
 		List map[string]*File
@@ -74,11 +81,11 @@ func (f *Files) ListFiles(user, folder, theBy, theOrder string) ([]string, error
 		order sortOrder = 0
 	)
 
-	if theBy == "sort-created" {
+	if theBy == ByCreated {
 		by = 1
 	}
 
-	if theOrder == "desc" {
+	if theOrder == DESC {
 		order = 1
 	}
 

@@ -156,7 +156,7 @@ func TestListFiles(t *testing.T) {
 	folder := "folder1"
 
 	// test for ascending sort by creation
-	files, err := f.ListFiles(user, folder, "sort-created", "asc")
+	files, err := f.ListFiles(user, folder, ByCreated, ASC)
 	if err != nil {
 		t.Errorf("ListFiles returned an error: %v", err)
 	}
@@ -166,7 +166,7 @@ func TestListFiles(t *testing.T) {
 	}
 
 	//test for descending sort by names
-	files, err = f.ListFiles(user, folder, "", "desc")
+	files, err = f.ListFiles(user, folder, ByName, DESC)
 	if err != nil {
 		t.Errorf("ListFiles returned an error: %v", err)
 	}
@@ -176,7 +176,7 @@ func TestListFiles(t *testing.T) {
 
 	// Test empty list handling
 	f = &Files{List: map[string]*File{}}
-	files, err = f.ListFiles("john", "emptyFolder", "sort-created", "asc")
+	files, err = f.ListFiles("john", "emptyFolder", "", "")
 	if err != nil {
 		t.Errorf("ListFiles returned an error with empty list: %v", err)
 	}
