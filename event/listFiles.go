@@ -17,7 +17,7 @@ func ListFiles(users *domain.Users, userName, folderName, by, order string) ([]s
 
 	if by != "" || order != "" {
 
-		err := errors.New("Usage: list files [username] [foldername] [--sort-name|--sort-created] [asc|desc]")
+		err := errors.New("Usage: list-files [username] [foldername] [--sort-name|--sort-created] [asc|desc]")
 
 		if by == "" || order == "" {
 			return nil, err
