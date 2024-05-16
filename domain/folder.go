@@ -44,7 +44,7 @@ func (f *Folders) AddFolder(name, description string, filesManager FilesManager)
 
 	if err := ValidateName(name); err != nil {
 
-		return fmt.Errorf("Error: The '%s' contain invalid chars", name)
+		return err
 	}
 	//set mutex lock
 	f.mux.Lock()

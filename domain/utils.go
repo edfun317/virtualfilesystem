@@ -2,6 +2,7 @@ package domain
 
 import (
 	"errors"
+	"fmt"
 	"unicode"
 )
 
@@ -37,12 +38,12 @@ func containsSpace(s string) bool {
 func ValidateName(name string) error {
 
 	if len(name) < 3 || len(name) > 20 {
-		return errors.New("username must be between 3 and 20 characters")
+		return fmt.Errorf("'%s' must be between 3 and 20 characters", name)
 	}
 
 	for _, r := range name {
 		if !unicode.IsLetter(r) && !unicode.IsNumber(r) {
-			return errors.New("username must contain only alphanumeric characters")
+			return fmt.Errorf("Error: The '%s' contain invalid chars", name)
 		}
 	}
 
