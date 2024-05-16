@@ -39,6 +39,6 @@ func (c *createFolder) execute(users *domain.Users) {
 		return
 	}
 
-	fmt.Printf("Create '%s' successfully\n", c.User)
+	fmt.Printf("Create '%s' successfully\n", c.Folder)
 
 }

@@ -72,9 +72,7 @@ func CoolRun() error {
 func processCommand(command string, users *domain.Users) {
 
 	parts := strings.Fields(command)
-	for _, v := range parts {
-		fmt.Println("parts", v)
-	}
+
 	if len(parts) > 0 {
 
 		//fetch the event from parts[0]

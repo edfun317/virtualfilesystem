@@ -41,6 +41,6 @@ func (c *createFile) execute(users *domain.Users) {
 		return
 	}
 
-	fmt.Printf("Create '%s' successfully\n", c.User)
+	fmt.Printf("Create '%s' in '%s/%s' successfully\n", c.File, c.User, c.Folder)
 
 }

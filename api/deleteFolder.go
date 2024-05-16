@@ -35,6 +35,6 @@ func (d *deleteFolder) execute(users *domain.Users) {
 		return
 	}
 
-	fmt.Printf("Delete '%s' successfully\n", d.User)
+	fmt.Printf("Delete '%s' successfully\n", d.Folder)
 
 }

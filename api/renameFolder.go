@@ -37,6 +37,6 @@ func (r *renameFolder) execute(users *domain.Users) {
 		return
 	}
 
-	fmt.Printf("Rename '%s' successfully\n", r.User)
+	fmt.Printf("Rename '%s' to '%s' successfully\n", r.Folder, r.NewFolder)
 
 }
