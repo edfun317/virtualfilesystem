@@ -8,9 +8,13 @@ import (
 // ListFolders retrieves a sorted list of folder names from a user's collection of folders.
 func ListFolders(users *domain.Users, userName, by, order string) ([]string, error) {
 
-	if by != "" || order != "" {
+	err := errors.New("Usage: list-folders [username] [--sort-name|--sort-created] [asc|desc]")
 
-		err := errors.New("Usage: list-folders [username] [--sort-name|--sort-created] [asc|desc]")
+	if userName == "" {
+		return nil, err
+	}
+
+	if by != "" || order != "" {
 
 		if by == "" || order == "" {
 			return nil, err

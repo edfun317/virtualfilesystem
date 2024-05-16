@@ -15,9 +15,13 @@ const (
 // ListFiles retrieves a sorted list of file names from a specified folder.
 func ListFiles(users *domain.Users, userName, folderName, by, order string) ([]string, error) {
 
-	if by != "" || order != "" {
+	err := errors.New("Usage: list-files [username] [foldername] [--sort-name|--sort-created] [asc|desc]")
 
-		err := errors.New("Usage: list-files [username] [foldername] [--sort-name|--sort-created] [asc|desc]")
+	if userName == "" || folderName == "" {
+		return nil, err
+	}
+
+	if by != "" || order != "" {
 
 		if by == "" || order == "" {
 			return nil, err

@@ -1,6 +1,7 @@
 package event
 
 import (
+	"errors"
 	"iscoollab/filesystem/domain"
 )
 
@@ -8,6 +9,10 @@ import (
 // to a user's collection of folders.
 func CreateFolder(users *domain.Users, name, folder, desc string) error {
 
+	if name == "" || folder == "" {
+		err := errors.New("Usage: create-folder [username] [foldername] [description]?")
+		return err
+	}
 	//retrieves the folder collection for the specified user from the Users object
 	folders, err := users.GetUserFolders(name)
 	if err != nil {

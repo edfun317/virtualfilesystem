@@ -1,10 +1,17 @@
 package event
 
-import "iscoollab/filesystem/domain"
+import (
+	"errors"
+	"iscoollab/filesystem/domain"
+)
 
 // CreateFile add a new file with a specified name and optional description
 func CreateFile(users *domain.Users, userName, folderName, fileName, desc string) error {
 
+	if userName == "" || folderName == "" || fileName == "" {
+		err := errors.New("Usage: create-file [username] [foldername] [filename] [description]?")
+		return err
+	}
 	//Find the specified folder
 	folder, err := getFolder(users, userName, folderName)
 	if err != nil {

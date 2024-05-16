@@ -1,10 +1,17 @@
 package event
 
-import "iscoollab/filesystem/domain"
+import (
+	"errors"
+	"iscoollab/filesystem/domain"
+)
 
 // RenameFolder changes the name of an existing folder to a new name for a specified user.
 func RenameFolder(users *domain.Users, userName, folderName, newFolder string) error {
 
+	if userName == "" || folderName == "" || newFolder == "" {
+		err := errors.New("Usage: rename-folder [username] [foldername] [new-folder-name]")
+		return err
+	}
 	//retrieves the folder collection for the specified user from the Users object
 	folders, err := users.GetUserFolders(userName)
 	if err != nil {
