@@ -1,5 +1,7 @@
 package main
 
-func main() {
+import "iscoollab/filesystem/api"
 
+func main() {
+	api.CoolRun()
 }
