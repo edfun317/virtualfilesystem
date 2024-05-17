@@ -138,7 +138,7 @@ func (f *Folders) ListFolders(user, theBy, theOrder string) ([]string, error) {
 	theFolders := f.GetSortedFolders(by, order)
 	if len(theFolders) == 0 {
 
-		return []string{}, nil
+		return []string{}, fmt.Errorf("Warning: The '%s' doesn't have any folders.", user)
 	}
 	result := FoldersFormatted(user, theFolders)
 

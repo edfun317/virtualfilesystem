@@ -177,8 +177,8 @@ func TestListFiles(t *testing.T) {
 	// Test empty list handling
 	f = &Files{List: map[string]*File{}}
 	files, err = f.ListFiles("john", "emptyFolder", "", "")
-	if err != nil {
-		t.Errorf("ListFiles returned an error with empty list: %v", err)
+	if err == nil {
+		t.Error("Expected ListFiles to return a warning when the folder is empty.")
 	}
 	if len(files) != 0 {
 		t.Errorf("Expected empty list, got %v", files)

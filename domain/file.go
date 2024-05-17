@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"errors"
 	"fmt"
 	"sort"
 	"sync"
@@ -92,7 +93,7 @@ func (f *Files) ListFiles(user, folder, theBy, theOrder string) ([]string, error
 	theFiles := f.GetSortedFiles(by, order)
 	if len(theFiles) == 0 {
 
-		return []string{}, nil
+		return []string{}, errors.New("Warning: The folder is empty")
 	}
 
 	result := FilesFormatted(user, folder, theFiles)

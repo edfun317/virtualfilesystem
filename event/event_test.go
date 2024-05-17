@@ -13,6 +13,8 @@ var (
 func setupUsers() *domain.Users {
 	users := domain.NewUsers()
 	users.AddUser(userName)
+
+	users.AddUser("testuser2")
 	return users
 }
 
@@ -30,6 +32,7 @@ func setupFiles() *domain.Users {
 	users := setupUsers()
 	folders, _ := users.GetUserFolders(userName)
 	folders.AddFolder("testfolder", "", domain.NewFiles())
+	folders.AddFolder("testfolder2", "", domain.NewFiles())
 	folder, _ := folders.FindFolder("testfolder")
 	folder.TheFiles.AddFile("testfile", "description")
 	return users
@@ -175,6 +178,7 @@ func TestListFiles(t *testing.T) {
 		{"InvalidSortOption", "testuser", "testfolder", "invalid", ASC, "Usage: list-files [username] [foldername] [--sort-name|--sort-created] [asc|desc]"},
 		{"InvalidSortOrder", "testuser", "testfolder", ByName, "invalid", "Usage: list-files [username] [foldername] [--sort-name|--sort-created] [asc|desc]"},
 		{"FolderNotFound", "testuser", "nonexistentfolder", ByName, ASC, "Error: The 'nonexistentfolder' doesn't exist"},
+		{"EmptyFiles", "testuser", "testfolder2", ByName, ASC, "Warning: The folder is empty"},
 		{"ValidListFiles", "testuser", "testfolder", ByName, ASC, ""},
 	}
 
@@ -205,6 +209,7 @@ func TestListFolders(t *testing.T) {
 		{"InvalidSortOption", "testuser", "invalid", ASC, "Usage: list-folders [username] [--sort-name|--sort-created] [asc|desc]"},
 		{"InvalidSortOrder", "testuser", ByName, "invalid", "Usage: list-folders [username] [--sort-name|--sort-created] [asc|desc]"},
 		{"UserNotFound", "nonexistentuser", ByName, ASC, "Error: The 'nonexistentuser' doesn't exist"},
+		{"EmptyFolder", "testuser2", ByName, ASC, "Warning: The 'testuser2' doesn't have any folders."},
 		{"ValidListFolders", "testuser", ByName, ASC, ""},
 	}
 

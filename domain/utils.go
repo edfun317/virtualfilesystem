@@ -1,7 +1,6 @@
 package domain
 
 import (
-	"errors"
 	"fmt"
 	"unicode"
 )
@@ -47,9 +46,9 @@ func ValidateName(name string) error {
 		}
 	}
 
-	// Check for spaces in the username
+	/* // Check for spaces in the username
 	if containsSpace(name) {
 		return errors.New("username must not contain spaces")
-	}
+	} */
 	return nil
 }
