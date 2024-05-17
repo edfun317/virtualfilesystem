@@ -30,12 +30,12 @@ func (u *Users) AddUser(username string) error {
 
 	// Validate the username format.
 	if err := ValidateName(name); err != nil {
-		return fmt.Errorf("Error:The '%s' contain invalid chars", name)
+		return fmt.Errorf("Error: The '%s' contain invalid chars", name)
 	}
 
 	// Check if the username already exists in the map.
 	if _, exists := u.list[name]; exists {
-		return fmt.Errorf("Error:The '%s' has already existed", name)
+		return fmt.Errorf("Error: The '%s' has already existed", name)
 	}
 
 	// Create a new Folders instance for the new user.
@@ -48,7 +48,7 @@ func (u *Users) AddUser(username string) error {
 func (u *Users) GetUserFolders(username string) (*Folders, error) {
 	folders, exists := u.list[username]
 	if !exists {
-		return nil, fmt.Errorf("user '%s' does not exist", username)
+		return nil, fmt.Errorf("Error: The '%s' doesn't exist", username)
 	}
 
 	return folders, nil
